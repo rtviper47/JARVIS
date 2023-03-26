@@ -18,7 +18,7 @@ import pyttsx3
 from datetime import date
 from datetime import datetime
 
-import wikipedia 
+from wikipedia_2_oop import WikipediaApp # Import for get_wikipedia method
 
 class Jarvis:
     def __init__(self) -> None:
@@ -80,14 +80,14 @@ class Jarvis:
                 self.query = recognized_words['alternative'][0]['transcript']
                 print(self.query)
                 
+                # If the user says 1 or wikipedia, have user enter input
                 if self.query == "one" or "wikipedia":
+                    WikipediaApp.get_wikipedia()
+                    WikipediaApp.display_wikipedia()
+                    self.engine.runAndWait()
                     
-                    self.engine.runAndWait()
-                else:    
-                    # Have Jarvis repeat the word(s)
-                    self.engine.say(self.query)
-                    self.engine.runAndWait()
-                
+                else:
+                    self.voice_commands()
             except sr.UnknownValueError:
                 print('Google Speech Recognition could not understand audio')
                 self.engine.say("I didn't understand what you said.")
