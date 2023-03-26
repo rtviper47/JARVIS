@@ -18,7 +18,7 @@ import pyttsx3
 from datetime import date
 from datetime import datetime
 
-from wikipedia_2_oop import WikipediaApp # Import for get_wikipedia method
+import wikipedia
 
 class Jarvis:
     def __init__(self) -> None:
@@ -47,11 +47,10 @@ class Jarvis:
         voices = self.engine.getProperty("voices")
         self.engine.setProperty("voice", voices[VOICE].id)
         self.engine.runAndWait()
-    
-    def take_user_input(self):
+        
         """
-            Recognize user voice input using Speech Recognition
-            module, converts it to text.
+        Recognize user voice input using Speech Recognition
+        module, converts it to text.
         """
         print( "-" * 30)
         # JARVIS says "Hello today is + date_and_time"
@@ -59,6 +58,8 @@ class Jarvis:
         print(self.date)
         print(self.time)
         self.engine.runAndWait()
+    
+    def take_user_input(self):
         
         # Have Jarvis list the menu items
         self.menu()
@@ -82,30 +83,25 @@ class Jarvis:
                 
                 # If the user says 1 or wikipedia, have user enter input
                 if self.query == "one" or "wikipedia":
-                    WikipediaApp.get_wikipedia()
-                    WikipediaApp.display_wikipedia()
-                    self.engine.runAndWait()
+                    self.get_wikipedia()
+                    self.display_wikipedia()
                     
-                else:
-                    self.voice_commands()
             except sr.UnknownValueError:
                 print('Google Speech Recognition could not understand audio')
                 self.engine.say("I didn't understand what you said.")
-                self.engine.runAndWait()
                 
             except sr.RequestError as e:
                 # if there was an error communicating with Google Speech
                 print(f"Google Speech did not respond: {e}")
                 self.engine.say("I didn't recognize what you said.")
-                self.engine.runAndWait()       
             
             except:
                 self.engine.say("I didn't recognize what you said.")
                 print("I didn't recognize what you said.")
-                self.engine.runAndWait()
-                
-    def voice_commands(self):
+    
+    def exit(self):
         if self.query == "quit":
+            self.engine.say("Goodbye")
             print("Goodbye")
             exit()
         
@@ -117,8 +113,29 @@ class Jarvis:
         self.engine.say("Quit")
         print("2. Quit")
         self.engine.runAndWait()
+        
+    def get_wikipedia(self):
+        """Search Wikipedia
+        """
+        try:
+            # Type in your search term
+            result = input("Search Wikipedia: ")
+            # Return a summary result of 3 sentences
+            self.__summary = wikipedia.summary(result, sentences=4)
+            
+        except:
+            # Use raise for troubleshooting exceptions
+            # raise
+            # If there is an exception, allow the user to try again.
+            print("Try a different search term.")
+            
+    def display_wikipedia(self):
+        """
+            Display Wikipedia search results
+        """
+        print(self.__summary)
 
 jarvis = Jarvis()
 while True:
     jarvis.take_user_input()
-    jarvis.voice_commands()
+    jarvis.exit()
