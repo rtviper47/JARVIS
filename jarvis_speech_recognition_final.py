@@ -13,17 +13,24 @@ import speech_recognition as sr
 import pyttsx3
 
 # To get today's date and time
+# Examples taken from:
+# https://www.programiz.com/python-programming/datetime/current-datetime
 from datetime import date
+from datetime import datetime
 
-import wikipedia
-import wikipedia_2_oop
+import wikipedia 
 
 class Jarvis:
     def __init__(self) -> None:
         # Create object
         self.r = sr.Recognizer()
         
-        self.today = date.today()  # Get today's date and time
+        self.today = date.today()   # For Jarvis to say today's date
+        self.dt = datetime.now()  # Get today's date and time for printing
+        
+        # Textual month, day and year for printing
+        self.date = self.today.strftime("%B %d, %Y")
+        self.time = self.dt.strftime("%H:%M:%S")
         
         """
             Initialize jarvis tts
@@ -40,18 +47,22 @@ class Jarvis:
         voices = self.engine.getProperty("voices")
         self.engine.setProperty("voice", voices[VOICE].id)
         self.engine.runAndWait()
-        
-    def menu(self):
-        """
-            Choose an option below:
-            1. Wikipedia
-            2. Quit
-        """    
     
     def take_user_input(self):
-        """Recognize user voice input using Speech Recognition
-        module, converts it to text.
         """
+            Recognize user voice input using Speech Recognition
+            module, converts it to text.
+        """
+        print( "-" * 30)
+        # JARVIS says "Hello today is + date_and_time"
+        self.engine.say(f"Hello, it is {self.today}")
+        print(self.date)
+        print(self.time)
+        self.engine.runAndWait()
+        
+        # Have Jarvis list the menu items
+        self.menu()
+        
         # with your local microphone as the source
         with sr.Microphone() as source:
             print("Listening...")
@@ -69,9 +80,8 @@ class Jarvis:
                 self.query = recognized_words['alternative'][0]['transcript']
                 print(self.query)
                 
-                if self.query == "what is today":   # JARVIS tells me today's date
-                    self.engine.say(self.today)
-                    print(self.today)
+                if self.query == "one" or "wikipedia":
+                    
                     self.engine.runAndWait()
                 else:    
                     # Have Jarvis repeat the word(s)
@@ -81,20 +91,32 @@ class Jarvis:
             except sr.UnknownValueError:
                 print('Google Speech Recognition could not understand audio')
                 self.engine.say("I didn't understand what you said.")
+                self.engine.runAndWait()
                 
             except sr.RequestError as e:
                 # if there was an error communicating with Google Speech
                 print(f"Google Speech did not respond: {e}")
-                self.engine.say("I didn't understand what you said.")       
+                self.engine.say("I didn't recognize what you said.")
+                self.engine.runAndWait()       
             
             except:
-                self.engine.say("I didn't recogize what you said.")
+                self.engine.say("I didn't recognize what you said.")
                 print("I didn't recognize what you said.")
+                self.engine.runAndWait()
                 
     def voice_commands(self):
         if self.query == "quit":
             print("Goodbye")
             exit()
+        
+    def menu(self):
+        self.engine.say("Choose an option from the menu")
+        print("Choose an option from the menu: ")
+        self.engine.say("Wikipedia")
+        print("1. Wikipedia")
+        self.engine.say("Quit")
+        print("2. Quit")
+        self.engine.runAndWait()
 
 jarvis = Jarvis()
 while True:
