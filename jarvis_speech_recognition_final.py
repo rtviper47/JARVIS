@@ -64,6 +64,7 @@ class Jarvis:
         # Have Jarvis list the menu items
         self.menu()
         
+        
         # with your local microphone as the source
         with sr.Microphone() as source:
             print("Listening...")
@@ -82,9 +83,27 @@ class Jarvis:
                 print(self.query)
                 
                 # If the user says 1 or wikipedia, have user enter input
-                if self.query == "one" or "wikipedia":
-                    self.get_wikipedia()
-                    self.display_wikipedia()
+                if self.query == "wikipedia":
+                    try:
+                        # Type in your search term
+                        result = input("Search Wikipedia: ")
+                        # Return a summary result of 3 sentences
+                        self.summary = wikipedia.summary(result, sentences=4)
+                        
+                    except:
+                        # Use raise for troubleshooting exceptions
+                        # raise
+                        # If there is an exception, allow the user to try again.
+                        print("Try a different search term.")
+                        
+                    print(self.summary)
+                    self.engine.runAndWait()
+                   
+                elif self.query == "quit":
+                    self.engine.say("Goodbye")
+                    print("Goodbye")
+                    exit()
+                    
                     
             except sr.UnknownValueError:
                 print('Google Speech Recognition could not understand audio')
@@ -98,12 +117,7 @@ class Jarvis:
             except:
                 self.engine.say("I didn't recognize what you said.")
                 print("I didn't recognize what you said.")
-    
-    def exit(self):
-        if self.query == "quit":
-            self.engine.say("Goodbye")
-            print("Goodbye")
-            exit()
+ 
         
     def menu(self):
         self.engine.say("Choose an option from the menu")
@@ -113,29 +127,8 @@ class Jarvis:
         self.engine.say("Quit")
         print("2. Quit")
         self.engine.runAndWait()
-        
-    def get_wikipedia(self):
-        """Search Wikipedia
-        """
-        try:
-            # Type in your search term
-            result = input("Search Wikipedia: ")
-            # Return a summary result of 3 sentences
-            self.__summary = wikipedia.summary(result, sentences=4)
-            
-        except:
-            # Use raise for troubleshooting exceptions
-            # raise
-            # If there is an exception, allow the user to try again.
-            print("Try a different search term.")
-            
-    def display_wikipedia(self):
-        """
-            Display Wikipedia search results
-        """
-        print(self.__summary)
 
 jarvis = Jarvis()
 while True:
     jarvis.take_user_input()
-    jarvis.exit()
+        
