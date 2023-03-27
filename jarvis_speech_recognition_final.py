@@ -63,7 +63,7 @@ class Jarvis:
         
         # Have Jarvis list the menu items
         self.menu()
-        
+        self.engine.runAndWait()
         
         # with your local microphone as the source
         with sr.Microphone() as source:
@@ -103,8 +103,7 @@ class Jarvis:
                     self.engine.say("Goodbye")
                     print("Goodbye")
                     exit()
-                    
-                    
+                           
             except sr.UnknownValueError:
                 print('Google Speech Recognition could not understand audio')
                 self.engine.say("I didn't understand what you said.")
@@ -118,7 +117,11 @@ class Jarvis:
                 self.engine.say("I didn't recognize what you said.")
                 print("I didn't recognize what you said.")
  
-        
+    def voice_commands(self):
+        if self.query == "quit":
+            print("Goodbye")
+            exit()
+            
     def menu(self):
         self.engine.say("Choose an option from the menu")
         print("Choose an option from the menu: ")
@@ -126,9 +129,8 @@ class Jarvis:
         print("1. Wikipedia")
         self.engine.say("Quit")
         print("2. Quit")
-        self.engine.runAndWait()
 
 jarvis = Jarvis()
 while True:
     jarvis.take_user_input()
-        
+    jarvis.voice_commands()
